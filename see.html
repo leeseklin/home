@@ -10,33 +10,42 @@
 <body>
   <h1 style="text-align: center;">
 
-<p>Hits3: 
+<p>Hits4: 
   <span class="counterapi" 
-        id="my-counter"
-        ns="leeseklin-github" 
-        key="home-see" 
-        behavior="vote">
+        id="live-counter"
+        ns="leeseklin-github-pages" 
+        key="home-see"
+        no-anim="true">
   </span>
 </p>
 
-<!-- The CounterAPI Core Library -->
-<script src="https://counterapi.com"></script>
+<!-- The Core Counter API Script -->
+<script src="https://counterapi.com/c.js"></script>
 
-<!-- Script to automatically trigger a +1 count on every page load -->
+<!-- The Refresh Bypass Script -->
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // Forces the counter to submit a +1 count instantly on load
-    setTimeout(() => {
-      const counterEl = document.getElementById('my-counter');
-      if (counterEl && typeof counterEl.increment === 'function') {
-        counterEl.increment();
-      } else {
-        // Fallback: Dispatches a click event if the component uses standard click triggers
-        counterEl.click();
-      }
-    }, 300); // 300ms delay to make sure the external script has finished loading
+  window.addEventListener('load', () => {
+    // 1. Target the counter element
+    const counterSpan = document.getElementById('live-counter');
+    
+    // 2. Target the exact backend URL for your counter node
+    const namespace = 'leeseklin-github-pages';
+    const key = 'home-see';
+    const forceHitUrl = `https://counterapi.com{namespace}/hit/${key}`;
+
+    // 3. Silently trigger a raw server request in the background to add +1
+    fetch(forceHitUrl)
+      .then(response => response.json())
+      .then(data => {
+        // 4. Force the visible widget to immediately display the freshly updated number
+        if (data && data.value !== undefined && counterSpan) {
+          counterSpan.innerText = Number(data.value).toLocaleString();
+        }
+      })
+      .catch(err => console.log('Bypass error:', err));
   });
 </script>
+
 
 
   </h1>
