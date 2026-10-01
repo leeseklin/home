@@ -10,17 +10,33 @@
 <body>
   <h1 style="text-align: center;">
 
-<p>Hits2: 
+<p>Hits3: 
   <span class="counterapi" 
-        ns="leeseklin-github-pages" 
+        id="my-counter"
+        ns="leeseklin-github" 
         key="home-see" 
-        timeline="total"
-        no-anim="true"
         behavior="vote">
   </span>
 </p>
 
-<script src="https://counterapi.com/c.js" async></script>
+<!-- The CounterAPI Core Library -->
+<script src="https://counterapi.com"></script>
+
+<!-- Script to automatically trigger a +1 count on every page load -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // Forces the counter to submit a +1 count instantly on load
+    setTimeout(() => {
+      const counterEl = document.getElementById('my-counter');
+      if (counterEl && typeof counterEl.increment === 'function') {
+        counterEl.increment();
+      } else {
+        // Fallback: Dispatches a click event if the component uses standard click triggers
+        counterEl.click();
+      }
+    }, 300); // 300ms delay to make sure the external script has finished loading
+  });
+</script>
 
 
   </h1>
