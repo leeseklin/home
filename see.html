@@ -12,33 +12,30 @@
 
 <!-- Visual Container for the Counter -->
 <div style="font-family: system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; color: #1f2937;">
-  <span style="font-weight: 600; font-size: 14px;">Test1 Page Views:</span>
+  <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
   <span id="view-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
 </div>
 
 <!-- Counter Script -->
 <script>
   (async function() {
-    // 1. SET UP THE URL IDENTITY FOR YOUR GITHUB PAGE
-    const domain = 'leeseklin.github.io'; 
-    const pageId = 'home-see';
+    // A clean, completely unique key for your specific GitHub page
+    const uniqueKey = 'leeseklin_github_io_home_see'; 
     const counterEl = document.getElementById('view-counter');
     
-    // 2. CHECK SESSION: Don't track if the owner/user is just hitting refresh
-    const sessionKey = `visited_${domain}_${pageId}`;
+    // Check if the user has already visited in this session to block refresh inflating
+    const sessionKey = 'has_visited_' + uniqueKey;
     const hasVisited = sessionStorage.getItem(sessionKey);
     
-    // 3. API RULES: Use basic '/view/' to add a hit, or '?readOnly=true' to just load the number
-    let apiUrl = `https://counterapi.com{domain}/view/${pageId}`;
-    if (hasVisited) {
-      apiUrl += '?readOnly=true';
-    }
+    // Choose the endpoint: 'hit' increments by 1, 'get' only reads the data
+    const action = hasVisited ? 'get' : 'hit';
+    const apiUrl = `https://mileshilliard.com{action}/${uniqueKey}`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
       
-      // The API returns the number inside the 'value' property
+      // The API returns the accumulated value inside data.value
       if (data && data.value !== undefined) {
         counterEl.innerText = Number(data.value).toLocaleString();
         sessionStorage.setItem(sessionKey, 'true');
