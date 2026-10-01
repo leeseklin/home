@@ -8,9 +8,45 @@
   <title>Welcome</title>
 </head>
 <body>
-  <h1 style="text-align: center;">
-    <span class="counterapi" unique="false"></span>
-    <script src="https://counterapi.com/c.js" async></script>
+  <h1 style="text-align: center;"><!-- Visual Container for the Counter -->
+<div style="font-family: system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; color: #1f2937;">
+  <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
+  <span id="view-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
+</div>
+
+<!-- Counter Script -->
+<script>
+  (async function() {
+    // 1. CHOOSE A UNIQUE ID: Replace 'my-unique-website-page' with your actual page or site name
+    const pageId = 'my-unique-website-page'; 
+    const counterEl = document.getElementById('view-counter');
+    
+    // 2. CHECK SESSION: Prevent counting page refreshes
+    const hasVisited = sessionStorage.getItem('page_visited_' + pageId);
+    
+    // 3. HIT THE API: 'hit' increases the count, 'get' just reads it without increasing
+    const action = hasVisited ? 'get' : 'hit';
+    const apiUrl = `https://counterapi.dev{pageId}/${action}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      
+      if (data && data.count !== undefined) {
+        // Display the accumulated count from the server
+        counterEl.innerText = data.count.toLocaleString();
+        // Mark session as visited so refresh doesn't trigger another +1
+        sessionStorage.setItem('page_visited_' + pageId, 'true');
+      } else {
+        counterEl.innerText = '0';
+      }
+    } catch (error) {
+      console.error('Counter error:', error);
+      counterEl.innerText = 'Unavailable';
+    }
+  })();
+</script>
+
   </h1>
   <br>
 
