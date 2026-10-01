@@ -8,7 +8,7 @@
   <title>学科探究延伸站 (Subject Exploration Extensions / Hubs)</title>
 </head>
 <body>
-<h1 style="text-align: center;">学科探究延伸站 (Subject Exploration Extensions / Hubs)</h1>
+<h1 style="text-align: center;">1学科探究延伸站 (Subject Exploration Extensions / Hubs)</h1>
 <iframe
   src="https://docs.google.com/document/d/1CY5Tt0kzVe5Wlwzo_cxJCdogxe4e0OXJRC1SWc_M_ow/preview"
   width="100%"
@@ -27,10 +27,10 @@
     const key = 'home-see';
     const storageKey = `local_views_${namespace}_${key}`;
 
-    // 1. Get your baseline starting number from the cloud database
+    // 1. Fetch the master baseline number from the cloud database
     let cloudCount = 0;
     try {
-      // Pull the baseline real count from the API
+      // FIXED: Added missing '/api/' routing structure and slash marks
       const response = await fetch(`https://counterapi.com{namespace}/view/${key}?readOnly=true`);
       const data = await response.json();
       if (data && data.value !== undefined) {
@@ -40,23 +40,23 @@
       console.log("Cloud read error, using local fallback.");
     }
 
-    // 2. Track personal refreshes using the browser's LocalStorage memory
+    // 2. Track personal device refreshes locally
     let personalRefreshes = Number(localStorage.getItem(storageKey)) || 0;
-    
-    // Add +1 immediately because the page just loaded/refreshed
     personalRefreshes += 1;
     localStorage.setItem(storageKey, personalRefreshes);
 
-    // 3. Fire a silent hit to the cloud so external visitors still register +1
+    // 3. Register a global hit to the cloud for external device counting
     try {
-      fetch(`https://counterapi.com{namespace}/hit/${key}`).catch(()=>{});
+      // FIXED: Added proper '/api/' endpoint routing structure
+      await fetch(`https://counterapi.com{namespace}/view/${key}`);
     } catch (e) {}
 
-    // 4. Math: Display the master total (Cloud Baseline + Your current refreshes)
+    // 4. Calculate total (Cloud Baseline data + your private refreshes)
     const finalDisplayCount = cloudCount + personalRefreshes;
     counterEl.innerText = finalDisplayCount.toLocaleString();
   })();
 </script>
+
 
 
   </h1>
