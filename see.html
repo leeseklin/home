@@ -11,43 +11,14 @@
   <h1 style="text-align: center;">
 
 <!-- Visual Container for the Counter -->
-<div style="font-family: system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; color: #1f2937;">
+<div style="font-family: system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; color: #1f2937;">
   <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
-  <span id="view-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
+  
+  <!-- Live Counter Image -->
+  <a href="https://www.freecounterstat.com" title="page counter">
+    <img src="https://optistats.ovh" border="0" title="page counter" alt="page counter" style="display: block; max-height: 20px;">
+  </a>
 </div>
-
-<!-- Counter Script -->
-<script>
-  (async function() {
-    // A clean, completely unique key for your specific GitHub page
-    const uniqueKey = 'leeseklin_github_io_home_see'; 
-    const counterEl = document.getElementById('view-counter');
-    
-    // Check if the user has already visited in this session to block refresh inflating
-    const sessionKey = 'has_visited_' + uniqueKey;
-    const hasVisited = sessionStorage.getItem(sessionKey);
-    
-    // Choose the endpoint: 'hit' increments by 1, 'get' only reads the data
-    const action = hasVisited ? 'get' : 'hit';
-    const apiUrl = `https://mileshilliard.com{action}/${uniqueKey}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      
-      // The API returns the accumulated value inside data.value
-      if (data && data.value !== undefined) {
-        counterEl.innerText = Number(data.value).toLocaleString();
-        sessionStorage.setItem(sessionKey, 'true');
-      } else {
-        counterEl.innerText = '0';
-      }
-    } catch (error) {
-      console.error('Counter API error:', error);
-      counterEl.innerText = 'Unavailable';
-    }
-  })();
-</script>
 
 
   </h1>
