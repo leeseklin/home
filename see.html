@@ -10,42 +10,45 @@
 <body>
   <h1 style="text-align: center;">
 
-<p>Hits4: 
-  <span class="counterapi" 
-        id="live-counter"
-        ns="leeseklin-github-pages" 
-        key="home-see"
-        no-anim="true">
-  </span>
-</p>
+<p>Hits5: <span id="refresh-counter">0</span></p>
 
-<!-- The Core Counter API Script -->
-<script src="https://counterapi.com/c.js"></script>
-
-<!-- The Refresh Bypass Script -->
 <script>
-  window.addEventListener('load', () => {
-    // 1. Target the counter element
-    const counterSpan = document.getElementById('live-counter');
-    
-    // 2. Target the exact backend URL for your counter node
+  (async function() {
+    const counterEl = document.getElementById('refresh-counter');
     const namespace = 'leeseklin-github-pages';
     const key = 'home-see';
-    const forceHitUrl = `https://counterapi.com{namespace}/hit/${key}`;
+    const storageKey = `local_views_${namespace}_${key}`;
 
-    // 3. Silently trigger a raw server request in the background to add +1
-    fetch(forceHitUrl)
-      .then(response => response.json())
-      .then(data => {
-        // 4. Force the visible widget to immediately display the freshly updated number
-        if (data && data.value !== undefined && counterSpan) {
-          counterSpan.innerText = Number(data.value).toLocaleString();
-        }
-      })
-      .catch(err => console.log('Bypass error:', err));
-  });
+    // 1. Get your baseline starting number from the cloud database
+    let cloudCount = 0;
+    try {
+      // Pull the baseline real count from the API
+      const response = await fetch(`https://counterapi.com{namespace}/view/${key}?readOnly=true`);
+      const data = await response.json();
+      if (data && data.value !== undefined) {
+        cloudCount = Number(data.value);
+      }
+    } catch (e) {
+      console.log("Cloud read error, using local fallback.");
+    }
+
+    // 2. Track personal refreshes using the browser's LocalStorage memory
+    let personalRefreshes = Number(localStorage.getItem(storageKey)) || 0;
+    
+    // Add +1 immediately because the page just loaded/refreshed
+    personalRefreshes += 1;
+    localStorage.setItem(storageKey, personalRefreshes);
+
+    // 3. Fire a silent hit to the cloud so external visitors still register +1
+    try {
+      fetch(`https://counterapi.com{namespace}/hit/${key}`).catch(()=>{});
+    } catch (e) {}
+
+    // 4. Math: Display the master total (Cloud Baseline + Your current refreshes)
+    const finalDisplayCount = cloudCount + personalRefreshes;
+    counterEl.innerText = finalDisplayCount.toLocaleString();
+  })();
 </script>
-
 
 
   </h1>
