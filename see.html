@@ -17,32 +17,39 @@
 </iframe>
 <br>
   <h1 style="text-align: center;">
-<p>1Hits: <span id="github-counter">Loading...</span></p>    
-  </h1>
 
+<p>Hits: <span id="github-counter">Loading...</span></p>
+
+<!-- Trigger that tells the counter backend to add +1 globally -->
 <img src="https://glitch.me" alt="Counter" style="display:none;">
+
 <script>
   (async function() {
     const counterEl = document.getElementById('github-counter');
-    // Replace with your exact GitHub Username and Repository Name
     const username = 'leeseklin';
-    const repo = 'home'; // Or whatever your repo name is
+    const repo = 'home'; // Make sure this matches your exact repository name
     
     try {
-      // Fetches the live text file from your GitHub repository
-      const response = await fetch(`https://githubusercontent.com{username}/${repo}/main/see-views.txt`);
+      // The '?t=' part stops the browser from caching old numbers
+      const cacheBuster = `?t=${new Date().getTime()}`;
+      const response = await fetch(`https://githubusercontent.com{username}/${repo}/main/see-views.txt${cacheBuster}`);
+      
       if (response.ok) {
         const count = await response.text();
-        counterEl.innerText = Number(count).toLocaleString();
+        // trim() cleans up any hidden spaces or new lines in the text file
+        counterEl.innerText = Number(count.trim()).toLocaleString();
       } else {
-        counterEl.innerText = '1'; // Default if file doesn't exist yet
+        counterEl.innerText = 'File Not Found';
       }
     } catch (e) {
       counterEl.innerText = 'Unavailable';
     }
   })();
 </script>
-  <br>
+
+    
+  </h1>
+    <br>
 
   <table align=center>
   </table>
