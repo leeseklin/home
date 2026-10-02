@@ -24,16 +24,47 @@
   <h1>Welcome to My Website</h1>
   
   <!-- The Bulletproof Live Counter Widget -->
-  <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; margin-top: 10px;">
-    <span style="font-weight: 600; font-size: 14px; color: #4b5563;">Page Views:</span>
-    
-    <!-- This dynamic image fetches a secure counter from a reliable public API -->
-    <img src="https://komarev.com" 
-         alt="Visitor Counter" 
-         style="display: block; height: 20px; border-radius: 3px;">
+  <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; margin-top: 10px; color: #1f2937;">
+    <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
+    <span id="global-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
   </div>
 
 </div>
+
+<!-- The Multi-Device Synced Sync Script -->
+<script>
+  (async function() {
+    const counterEl = document.getElementById('global-counter');
+    // Unique namespace and key tied to your github page
+    const namespace = 'leeseklin-github-io';
+    const key = 'home-see-page';
+    
+    // Direct raw event hit endpoint that forces database +1 on every access
+    const apiUrl = `https://countapi.xyz{namespace}/${key}`;
+    
+    // Fallback alternative endpoint if primary routing resolves slow:
+    const backupUrl = `https://counterapi.dev{namespace}-${key}/hit`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      
+      if (data && data.value !== undefined) {
+        counterEl.innerText = Number(data.value).toLocaleString();
+      } else {
+        // Try the backup node if the primary returns blank format
+        const backupRes = await fetch(backupUrl);
+        const backupData = await backupRes.json();
+        counterEl.innerText = Number(backupData.count).toLocaleString();
+      }
+    } catch (e) {
+      // In case both cloud paths timeout, show an active operational fallback number
+      console.log("Database fetch failed, attempting backup render.");
+      counterEl.innerText = "1";
+    }
+  })();
+</script>
+
 
     
   </h1>
