@@ -23,41 +23,30 @@
   
   <h1>Welcome to My Website</h1>
   
-  <!-- The Global Live Counter Widget -->
+  <!-- The Bulletproof Live Counter Widget -->
   <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; margin-top: 10px; color: #1f2937;">
     <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
-    <span id="global-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
+    <!-- The text inside this span will be updated automatically by the script -->
+    <span id="visits" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
   </div>
 
 </div>
 
-<!-- The Multi-Device Synced Tracking Logic -->
+<!-- 1. The Callback Script: Handles the data safely when it arrives -->
 <script>
-  (async function() {
-    const counterEl = document.getElementById('global-counter');
-    
-    // A completely unique key specifically for your GitHub directory page
-    const uniqueKey = 'leeseklin_github_io_home_see'; 
-    
-    // The 'hit' action forces the remote cloud database to add +1 instantly on every load
-    const apiUrl = `https://mileshilliard.com{uniqueKey}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      
-      // The open-source API updates and returns the value inside the data.value parameter
-      if (data && data.value !== undefined) {
-        counterEl.innerText = Number(data.value).toLocaleString();
-      } else {
-        counterEl.innerText = '1';
-      }
-    } catch (error) {
-      console.error('Cloud synchronization error:', error);
-      counterEl.innerText = 'Unavailable';
+  function handleCounterResponse(response) {
+    const counterEl = document.getElementById('visits');
+    if (response && response.value !== undefined) {
+      counterEl.innerText = Number(response.value).toLocaleString();
+    } else {
+      counterEl.innerText = '0';
     }
-  })();
+  }
 </script>
+
+<!-- 2. The JSONP Request Script: Bypasses CORS blocks to count every refresh -->
+<!-- Change 'leeseklin-github-pages' or 'home-see' to change your tracking keys -->
+<script async src="https://counterapi.com"></script>
 
 
     
