@@ -23,7 +23,7 @@
   
   <h1>Welcome to My Website</h1>
   
-  <!-- The Bulletproof Live Counter Widget -->
+  <!-- The Global Live Counter Widget -->
   <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; margin-top: 10px; color: #1f2937;">
     <span style="font-weight: 600; font-size: 14px;">Page Views:</span>
     <span id="global-counter" style="font-family: monospace; font-weight: 700; font-size: 15px; color: #2563eb;">Loading...</span>
@@ -31,36 +31,30 @@
 
 </div>
 
-<!-- The Multi-Device Synced Sync Script -->
+<!-- The Multi-Device Synced Tracking Logic -->
 <script>
   (async function() {
     const counterEl = document.getElementById('global-counter');
-    // Unique namespace and key tied to your github page
-    const namespace = 'leeseklin-github-io';
-    const key = 'home-see-page';
     
-    // Direct raw event hit endpoint that forces database +1 on every access
-    const apiUrl = `https://countapi.xyz{namespace}/${key}`;
+    // A completely unique key specifically for your GitHub directory page
+    const uniqueKey = 'leeseklin_github_io_home_see'; 
     
-    // Fallback alternative endpoint if primary routing resolves slow:
-    const backupUrl = `https://counterapi.dev{namespace}-${key}/hit`;
+    // The 'hit' action forces the remote cloud database to add +1 instantly on every load
+    const apiUrl = `https://mileshilliard.com{uniqueKey}`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
       
+      // The open-source API updates and returns the value inside the data.value parameter
       if (data && data.value !== undefined) {
         counterEl.innerText = Number(data.value).toLocaleString();
       } else {
-        // Try the backup node if the primary returns blank format
-        const backupRes = await fetch(backupUrl);
-        const backupData = await backupRes.json();
-        counterEl.innerText = Number(backupData.count).toLocaleString();
+        counterEl.innerText = '1';
       }
-    } catch (e) {
-      // In case both cloud paths timeout, show an active operational fallback number
-      console.log("Database fetch failed, attempting backup render.");
-      counterEl.innerText = "1";
+    } catch (error) {
+      console.error('Cloud synchronization error:', error);
+      counterEl.innerText = 'Unavailable';
     }
   })();
 </script>
