@@ -18,46 +18,29 @@
 <br>
   <h1 style="text-align: center;">
     
-<p><span id="refresh-counter">0</span></p>
+<p>Hits: <span id="github-counter">Loading...</span></p>
 
 <script>
   (async function() {
-    const counterEl = document.getElementById('refresh-counter');
-    const namespace = 'leeseklin-github-pages';
-    const key = 'home-see';
-    const storageKey = `local_views_${namespace}_${key}`;
-
-    // 1. Fetch the master baseline number from the cloud database
-    let cloudCount = 0;
+    const counterEl = document.getElementById('github-counter');
+    // Replace with your exact GitHub Username and Repository Name
+    const username = 'leeseklin';
+    const repo = 'home'; // Or whatever your repo name is
+    
     try {
-      // FIXED: Added missing '/api/' routing structure and slash marks
-      const response = await fetch(`https://counterapi.com{namespace}/view/${key}?readOnly=true`);
-      const data = await response.json();
-      if (data && data.value !== undefined) {
-        cloudCount = Number(data.value);
+      // Fetches the live text file from your GitHub repository
+      const response = await fetch(`https://githubusercontent.com{username}/${repo}/main/see-views.txt`);
+      if (response.ok) {
+        const count = await response.text();
+        counterEl.innerText = Number(count).toLocaleString();
+      } else {
+        counterEl.innerText = '1'; // Default if file doesn't exist yet
       }
     } catch (e) {
-      console.log("Cloud read error, using local fallback.");
+      counterEl.innerText = 'Unavailable';
     }
-
-    // 2. Track personal device refreshes locally
-    let personalRefreshes = Number(localStorage.getItem(storageKey)) || 0;
-    personalRefreshes += 1;
-    localStorage.setItem(storageKey, personalRefreshes);
-
-    // 3. Register a global hit to the cloud for external device counting
-    try {
-      // FIXED: Added proper '/api/' endpoint routing structure
-      await fetch(`https://counterapi.com{namespace}/view/${key}`);
-    } catch (e) {}
-
-    // 4. Calculate total (Cloud Baseline data + your private refreshes)
-    const finalDisplayCount = cloudCount + personalRefreshes;
-    counterEl.innerText = finalDisplayCount.toLocaleString();
   })();
 </script>
-
-
 
   </h1>
   <br>
